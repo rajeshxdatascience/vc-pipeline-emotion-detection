@@ -4,7 +4,7 @@ import yaml
 import logging
 import os 
 
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 # logging configure
 
@@ -66,7 +66,7 @@ def load_data(train_path: str,test_path: str) -> tuple[pd.DataFrame, pd.DataFram
 
 # apply BoW 
 
-def apply_bow(train_data: pd.DataFrame,test_data: pd.DataFrame,max_features: int) -> tuple[pd.DataFrame, pd.DataFrame]:
+def apply_tfidf(train_data: pd.DataFrame,test_data: pd.DataFrame,max_features: int) -> tuple[pd.DataFrame, pd.DataFrame]:
 
     try:
         X_train = train_data["content"].values
@@ -75,15 +75,15 @@ def apply_bow(train_data: pd.DataFrame,test_data: pd.DataFrame,max_features: int
         X_test = test_data["content"].values
         y_test = test_data["sentiment"].values
 
-        vectorizer = CountVectorizer(max_features=max_features)
+        vectorizer = TfidfVectorizer(max_features=max_features)
 
-        X_train_bow = vectorizer.fit_transform(X_train)
-        X_test_bow = vectorizer.transform(X_test)
+        X_train_tfidf = vectorizer.fit_transform(X_train)
+        X_test_tfidf = vectorizer.transform(X_test)
 
-        train_df = pd.DataFrame(X_train_bow.toarray())
+        train_df = pd.DataFrame(X_train_tfidf.toarray())
         train_df["label"] = y_train
 
-        test_df = pd.DataFrame(X_test_bow.toarray())
+        test_df = pd.DataFrame(X_test_tfidf.toarray())
         test_df["label"] = y_test
 
         logger.info("Bag of Words feature engineering completed successfully.")
@@ -105,12 +105,12 @@ def save_data(
         os.makedirs(data_path, exist_ok=True)
 
         train_df.to_csv(
-            os.path.join(data_path, "train_bow.csv"),
+            os.path.join(data_path, "train_tfidf.csv"),
             index=False
         )
 
         test_df.to_csv(
-            os.path.join(data_path, "test_bow.csv"),
+            os.path.join(data_path, "test_tfidf.csv"),
             index=False
         )
 
@@ -130,7 +130,7 @@ def main() -> None:
             "./data/processed/test_processed_data.csv"
         )
 
-        train_df, test_df = apply_bow(
+        train_df, test_df = apply_tfidf(
             train_data,
             test_data,
             max_features

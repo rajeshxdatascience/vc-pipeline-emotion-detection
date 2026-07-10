@@ -97,7 +97,7 @@ def main() -> None:
     try:
         params = load_params("params.yaml")
 
-        X_train, y_train = load_data("./data/features/train_bow.csv")
+        X_train, y_train = load_data("./data/features/train_tfidf.csv")
 
         model = train_model(
             X_train,

@@ -91,7 +91,7 @@ def save_metrics(metrics: dict, output_path: str) -> None:
     
 def main() -> None:
     try:
-        X_test, y_test = load_data("./data/features/test_bow.csv")
+        X_test, y_test = load_data("./data/features/test_tfidf.csv")
 
         model = load_model("models/model.pkl")
 
